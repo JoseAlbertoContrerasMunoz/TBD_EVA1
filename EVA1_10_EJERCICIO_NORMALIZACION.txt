@@ -1,0 +1,175 @@
+MySQL Shell 8.0.38
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect -mc root@localhost
+WARNING: The -mc option was deprecated, please use --mc instead. (Option has been processed as --mc).
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 9
+Server version: 8.0.39 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| tbd_e1             |
+| world              |
++--------------------+
+7 rows in set (0.0016 sec)
+ MySQL  localhost:3306 ssl  SQL > create database Empresa;
+Query OK, 1 row affected (0.0660 sec)
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| empresa            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| tbd_e1             |
+| world              |
++--------------------+
+8 rows in set (0.0016 sec)
+ MySQL  localhost:3306 ssl  SQL > use empresa
+Default schema set to `empresa`.
+Fetching global names, object names from `empresa` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE genero (
+                                        -> GenderID VARCHAR(10) PRIMARY KEY,
+                                        -> GenderDescription VARCHAR(50)
+                                        -> );
+Query OK, 0 rows affected (0.0376 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Ethnicity (
+                                        -> EthnicityID VARCHAR(10) PRIMARY KEY,
+                                        -> EthnicityName VARCHAR(50)
+                                        -> );
+Query OK, 0 rows affected (0.0444 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE UnidadNegocio (
+                                        -> BussinessUnitID VARCHAR(10) PRIMARY KEY,
+                                        -> BusinessUnitName VARCHAR(100)
+                                        -> );
+Query OK, 0 rows affected (0.0428 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Locations (
+                                        -> LocationID VARCHAR(10) PRIMARY KEY,
+                                        -> Country VARCHAR(50),
+                                        -> City VARCHAR(50)
+                                        -> );
+Query OK, 0 rows affected (0.0438 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Departamentos (
+                                        -> DepartamentID VARCHAR(10) PRIMARY KEY,
+                                        -> Departamento VARCHAR(50)
+                                        -> );
+Query OK, 0 rows affected (0.0465 sec)
+  MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Empleados (
+                                        -> EEID VARCHAR(20) PRIMARY KEY,
+                                        -> Name VARCHAR(50),
+                                        -> LastName VARCHAR(50),
+                                        -> EthnicityID VARCHAR(10),
+                                        -> GenderID VARCHAR(10),
+                                        -> Age INT,
+                                        -> LocationID VARCHAR(10),
+                                        -> AnnualSalary DECIMAL(10,2),
+                                        -> Bonus DECIMAL(5,2),
+                                        -> HireDate DATE,
+                                        -> FOREIGN KEY (EthnicityID) REFERENCES Ethnicity(EthnicityID),
+                                        -> FOREIGN KEY (GenderID) REFERENCES genero(GenderID),
+                                        -> FOREIGN KEY (LocationID) REFERENCES Locations(LocationID)
+                                        -> );
+Query OK, 0 rows affected (0.0882 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Puestos (
+                                        -> JobTitleID INT PRIMARY KEY,
+                                        -> JobTitle VARCHAR(50),
+                                        -> EEID VARCHAR(20),
+                                        -> FOREIGN KEY (EEID) REFERENCES Empleados(EEID)
+                                        -> );
+Query OK, 0 rows affected (0.0451 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE Renuncias (
+                                        -> RenunciasID VARCHAR(10) PRIMARY KEY,
+                                        -> EEID VARCHAR(20),
+                                        -> Fecha DATE,
+                                        -> FOREIGN KEY (EEID) REFERENCES Empleados(EEID)
+                                        -> );
+Query OK, 0 rows affected (0.0379 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > CREATE TABLE EmpleadosAsignaciones (
+                                        -> ID INT PRIMARY KEY,
+                                        -> EEID VARCHAR(20) NOT NULL,
+                                        -> DepartamentID  Varchar(10),
+                                        -> BussinessUnitID Varchar(10),
+                                        ->
+                                        -> FOREIGN KEY (EEID) REFERENCES Empleados(EEID),
+                                        -> FOREIGN KEY (DepartamentID) REFERENCES Departamentos(DepartamentID),
+                                        -> FOREIGN KEY (BussinessUnitID) REFERENCES UnidadNegocio(BussinessUnitID)
+                                        -> );
+Query OK, 0 rows affected (0.0576 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > show tables;
++-----------------------+
+| Tables_in_empresa     |
++-----------------------+
+| departamentos         |
+| empleados             |
+| empleadosasignaciones |
+| ethnicity             |
+| genero                |
+| locations             |
+| puestos               |
+| renuncias             |
+| unidadnegocio         |
++-----------------------+
+9 rows in set (0.0026 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > desc empleados;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| EEID         | varchar(20)   | NO   | PRI | NULL    |       |
+| Name         | varchar(50)   | YES  |     | NULL    |       |
+| LastName     | varchar(50)   | YES  |     | NULL    |       |
+| EthnicityID  | varchar(10)   | YES  | MUL | NULL    |       |
+| GenderID     | varchar(10)   | YES  | MUL | NULL    |       |
+| Age          | int           | YES  |     | NULL    |       |
+| LocationID   | varchar(10)   | YES  | MUL | NULL    |       |
+| AnnualSalary | decimal(10,2) | YES  |     | NULL    |       |
+| Bonus        | decimal(5,2)  | YES  |     | NULL    |       |
+| HireDate     | date          | YES  |     | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+10 rows in set (0.0042 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > desc empleadosasignaciones
+                                        -> ;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| ID              | int         | NO   | PRI | NULL    |       |
+| EEID            | varchar(20) | NO   | MUL | NULL    |       |
+| DepartamentID   | varchar(10) | YES  | MUL | NULL    |       |
+| BussinessUnitID | varchar(10) | YES  | MUL | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+4 rows in set (0.0023 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > desc departamentos;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| DepartamentID | varchar(10) | NO   | PRI | NULL    |       |
+| Departamento  | varchar(50) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+2 rows in set (0.0015 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL > desc renuncias;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| RenunciasID | varchar(10) | NO   | PRI | NULL    |       |
+| EEID        | varchar(20) | YES  | MUL | NULL    |       |
+| Fecha       | date        | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.0015 sec)
+ MySQL  localhost:3306 ssl  empresa  SQL >
